@@ -91,6 +91,26 @@ if ($result !== false) {
                     // send interim update event
                     $time_spend = time() - $row['created'];
                     $authenticator->updateAccounting($row['username'], $row['sessionid'], $time_spend, $row['bytes_in'], $row['bytes_out'], $row['ip_address']);
+                    $authProps = $authenticator->getLastAuthProperties();
+                    // when adding more client/session restrictions, extend next code
+                    // (currently only time is restricted)
+                    // setting session-timeout to hard 0
+                    if (array_key_exists('data_exhaust', $authProps)) {
+                        syslog(LOG_ERR, 'DATA EXHAUST EXISTS' . $authProp);
+                        $stmt = $db->prepare('update session_restrictions 
+                                                set session_timeout = :session_timeout 
+                                                where zoneid = :zoneid and sessionid = :sessionid');
+                        $stmt->bindParam(':zoneid', $row['zoneid']);
+                        $stmt->bindParam(':sessionid', $row['sessionid']);
+                        $stmt->bindParam(':session_timeout', $authProps['data_exhaust']);
+                        try {
+                            $stmt->execute();
+                            syslog(LOG_ERR, 'DB CALL EXECUTED');
+                        } catch (Exception $e) {
+                            syslog(LOG_ERR, 'DB CALL FAILED' . $e->getMessage());
+                        }
+                    }
+
                 }
             }
         }

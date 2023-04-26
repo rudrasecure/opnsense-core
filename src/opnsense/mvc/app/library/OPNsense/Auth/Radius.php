@@ -368,6 +368,19 @@ class Radius extends Base implements IAuthConnector
                 }
                 switch ($req) {
                     case RADIUS_ACCOUNTING_RESPONSE:
+			            while ($resa = radius_get_attr($radius)) {
+                            switch ($resa['attr']) {
+                                case RADIUS_SESSION_TIMEOUT:
+                                    // Radius will send a session timeout attribute.
+                                    // Doesn't matter what the value of attr is because we'll set it to 0 in db
+                                    $data_exhaust = radius_cvt_int($resa['data']);
+                                    syslog(LOG_ERR, "ACCT DATA EXHAUST:" . $data_exhaust);
+                                    $this->lastAuthProperties['data_exhaust'] = radius_cvt_int($resa['data']);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
                         break;
                     default:
                         syslog(LOG_ERR, "Unexpected return value:$radius\n");
