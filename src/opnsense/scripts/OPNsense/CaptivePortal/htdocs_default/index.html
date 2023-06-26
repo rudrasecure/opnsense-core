@@ -16,19 +16,19 @@
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/signin.css" rel="stylesheet">
 
-        <style>
+         <style>
             table {
               font-family: arial, sans-serif;
               border-collapse: collapse;
               width: 100%;
             }
-            
+
             td, th {
               border: 1px solid #dddddd;
               text-align: left;
               padding: 8px;
             }
-            
+
             tr:nth-child(even) {
               background-color: #dddddd;
             }
@@ -173,29 +173,28 @@
             });
         </script>
     </head>
-    <body>
-        <header class="page-head">
-            <nav class="navbar navbar-default" >
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="#">
-                            <img class="brand-logo" src="images/default-logo.png" height="30" width="150">
-                        </a>
-                    </div>
-                </div>
-            </nav>
-        </header>
+    <body style="background-color: #000;">
         <main class="page-content col-sm-6 col-sm-push-3">
           <!-- User option 1: login needed with name and password -->
           <div id="login_password" class="hidden">
-              <form class="form-signin">
-                  <h2 class="form-signin-heading">Please sign in</h2>
-                  <label for="inputUsername" class="sr-only">Username</label>
-                  <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus autocomplete="none" autocapitalize="none" autocorrect="off">
-                  <label for="inputPassword" class="sr-only">Password</label>
-                  <input type="password" autocomplete="new-password" id="inputPassword" class="form-control" placeholder="Password" required>
-                  <button class="btn btn-primary btn-block" id="signin" type="button">Sign in</button>
-              </form>
+            <form class="form-signin">
+              <img class="brand-logo" src="/images/logo.png" height="30" width="150">
+
+              <h4 style="color: #fff;">Hello!</h2>
+              <h5 style="color: #fff;">please sign in to continue.</h2>
+
+              <div style="margin-bottom: 20px;">
+                <label for="inputUsername" class="sr-only">Username</label>
+                <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus autocomplete="none" autocapitalize="none" autocorrect="off" style="background-color: rgb(10, 15, 21); color: #FFF;">
+              </div>
+
+              <div style="margin-bottom: 30px;">
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" autocomplete="new-password" id="inputPassword" class="form-control" placeholder="Password" required style="background-color: rgb(10, 15, 21); color: #FFF;">
+              </div>
+
+              <button class="btn btn-primary btn-block" id="signin" type="button">Sign in</button>
+            </form>
           </div>
           <!-- User option 2: login needed, without username, password -->
           <div id="login_none" class="hidden">
@@ -205,6 +204,16 @@
           </div>
           <!-- User option 3: Already logged in, show logout button -->
           <div id="logout_frm" class="hidden">
+            <table>
+                <tr>
+                    <th>Start Time</th>
+                    <th>Data Consumed</th>
+                </tr>
+                <tr>
+                    <td>22/01/2023 | 10:30:20 A.M. UTC</td>
+                    <td>1000 KB</td>
+                </tr>
+            </table>
             <form class="form-signin">
                 <button class="btn btn-primary btn-block" id="logoff" type="button">Logout</button>
             </form>
@@ -214,17 +223,6 @@
               <button type="button" class="close" id="btnCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <span id="errorMSGtext"></span>
           </div>
-
-          <table>
-            <tr>
-              <th>Start Time</th>
-              <th>Data Consumed</th>
-            </tr>
-            <tr>
-              <td>22/01/2023 | 10:30:20 A.M. UTC</td>
-              <td>1000 KB</td>
-            </tr>
-          </table>
         </main>
 
         <!-- bootstrap script -->
