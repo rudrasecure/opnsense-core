@@ -16,6 +16,24 @@
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/signin.css" rel="stylesheet">
 
+        <style>
+            table {
+              font-family: arial, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+            }
+            
+            td, th {
+              border: 1px solid #dddddd;
+              text-align: left;
+              padding: 8px;
+            }
+            
+            tr:nth-child(even) {
+              background-color: #dddddd;
+            }
+        </style>
+
         <!-- static zone info -->
         <script src="js/zone.js"></script>
 
@@ -196,6 +214,17 @@
               <button type="button" class="close" id="btnCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <span id="errorMSGtext"></span>
           </div>
+
+          <table>
+            <tr>
+              <th>Start Time</th>
+              <th>Data Consumed</th>
+            </tr>
+            <tr>
+              <td>22/01/2023 | 10:30:20 A.M. UTC</td>
+              <td>1000 KB</td>
+            </tr>
+          </table>
         </main>
 
         <!-- bootstrap script -->
