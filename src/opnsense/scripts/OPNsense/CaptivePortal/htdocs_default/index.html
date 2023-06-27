@@ -23,6 +23,10 @@
               width: 100%;
             }
 
+            th {
+                color: #FFF;
+            }
+
             td, th {
               border: 1px solid #dddddd;
               text-align: left;
@@ -150,25 +154,64 @@
                 });
 
                 /**
+                 * Format bytes as human-readable text.
+                 * 
+                 * @param bytes Number of bytes.
+                 * @param si True to use metric (SI) units, aka powers of 1000. False to use 
+                 *           binary (IEC), aka powers of 1024.
+                 * @param dp Number of decimal places to display.
+                 * 
+                 * @return Formatted string.
+                 */
+                function humanFileSize(bytes, si=true, dp=1) {
+                    const thresh = si ? 1000 : 1024;
+
+                    if (Math.abs(bytes) < thresh) {
+                        return bytes + ' B';
+                    }
+
+                    const units = si 
+                        ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
+                        : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+                    let u = -1;
+                    const r = 10**dp;
+
+                    do {
+                        bytes /= thresh;
+                        ++u;
+                    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+                    return bytes.toFixed(dp) + ' ' + units[u];
+                }
+
+                /**
                  * execute after pageload
                  */
-                 $.ajax({
-                     type: "POST",
-                     url: "/api/captiveportal/access/status/" + zoneid + "/",
-                     dataType:"json",
-                     data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
-                 }).done(function(data) {
-                    if (data['clientState'] == 'AUTHORIZED') {
-                      $("#logout_frm").removeClass('hidden');
-                    } else if (data['authType'] == 'none') {
-                        $("#login_none").removeClass('hidden');
-                    } else {
-                        $("#login_password").removeClass('hidden');
-                    }
-                 }).fail(function(){
-                     $("#errorMSGtext").html("unable to connect to authentication server");
-                     $("#alertMSG").removeClass("hidden");
-                 });
+                 function getStatus() {
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/captiveportal/access/status/" + zoneid + "/",
+                        dataType:"json",
+                        data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
+                    }).done(function(data) {
+                        if (data['clientState'] == 'AUTHORIZED') {
+                            $("#logout_frm").removeClass('hidden');
+                            $("#startTime").html(new Date(data.startTime).toLocaleString());
+                            $("#bytesConsumed").html(humanFileSize(Number(data.bytes_in) + Number(data.bytes_out)));
+
+                            setTimeout(function(){getStatus();}, 5000);
+                        } else if (data['authType'] == 'none') {
+                            $("#login_none").removeClass('hidden');
+                        } else {
+                            $("#login_password").removeClass('hidden');
+                        }
+                    }).fail(function(){
+                        $("#errorMSGtext").html("unable to connect to authentication server");
+                        $("#alertMSG").removeClass("hidden");
+                    });
+                 }
+
+                 getStatus()
 
             });
         </script>
@@ -210,8 +253,8 @@
                     <th>Data Consumed</th>
                 </tr>
                 <tr>
-                    <td>22/01/2023 | 10:30:20 A.M. UTC</td>
-                    <td>1000 KB</td>
+                    <td id="startTime"></td>
+                    <td id="bytesConsumed"></td>
                 </tr>
             </table>
             <form class="form-signin">
