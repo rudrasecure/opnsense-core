@@ -203,6 +203,7 @@
                         } else if (data['authType'] == 'none') {
                             $("#login_none").removeClass('hidden');
                         } else {
+                            $("#logout_frm").addClass('hidden');
                             $("#login_password").removeClass('hidden');
                         }
                     }).fail(function(){
@@ -250,7 +251,7 @@
             <table>
                 <tr>
                     <th>Start Time</th>
-                    <th>Data Consumed</th>
+                    <th>Data Consumed (current session)</th>
                 </tr>
                 <tr>
                     <td id="startTime"></td>
