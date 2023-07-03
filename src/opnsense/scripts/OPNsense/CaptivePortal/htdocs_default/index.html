@@ -196,7 +196,7 @@
                     }).done(function(data) {
                         if (data['clientState'] == 'AUTHORIZED') {
                             $("#logout_frm").removeClass('hidden');
-                            $("#startTime").html(new Date(data.startTime).toLocaleString());
+                            $("#startTime").html(new Date(data.startTime * 1000).toLocaleString('en-gb'));
                             $("#bytesConsumed").html(humanFileSize(Number(data.bytes_in) + Number(data.bytes_out)));
 
                             setTimeout(function(){getStatus();}, 5000);
