@@ -72,13 +72,21 @@ class ExportController extends ApiMutableModelControllerBase {
         $trafficShaperPipes = $settingsController->searchPipesAction()["rows"];
         $trafficShaperRules = $settingsController->customSearchRulesAction()["rows"];
         $unboundDnsController = new \OPNsense\Unbound\Api\SettingsController();
-        $unboundDnsSettings = $unboundDnsController->getAction();
+        $unboundDnsSettings = $unboundDnsController->getAction()["unbound"]["dnsbl"]["type"];
+        $unboundDnsResults = [];
+        foreach ($unboundDnsSettings as $key => $value) {
+            $unboundDnsResults[] = [
+                "key" => $key,
+                "value" => $value["value"],
+                "selected" => $value["selected"],
+            ];
+        }
         $json = json_encode([
             "interfaces" => $xml->interfaces,
             "firewallRules" => $rules,
             "trafficShaperPipes" => $trafficShaperPipes,
             "trafficShaperRules" => $trafficShaperRules,
-            "unboundDnsBlocklists" => $unboundDnsSettings["unbound"]["dnsbl"]["type"],
+            "unboundDnsBlocklists" => $unboundDnsResults,
         ]);
         return $json;
     }
