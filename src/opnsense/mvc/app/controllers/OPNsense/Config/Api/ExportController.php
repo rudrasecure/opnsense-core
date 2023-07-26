@@ -53,6 +53,18 @@ class CustomSettingsController extends SettingsController {
 class ExportController extends ApiMutableModelControllerBase {
     protected static $internalModelName = 'filter';
     protected static $internalModelClass = 'OPNsense\Firewall\Filter';
+
+    private function unwrapObject($object) {
+        $results = [];
+        foreach ($object as $key => $value) {
+            $results[] = [
+                "key" => $key,
+                "value" => $value["value"],
+                "selected" => $value["selected"],
+            ];
+        }
+        return $results;
+    }
     /**
      * Export all OPNsense configuration and present it in the response body
      */
@@ -73,24 +85,15 @@ class ExportController extends ApiMutableModelControllerBase {
         $trafficShaperRules = $settingsController->customSearchRulesAction()["rows"];
         $unboundDnsController = new \OPNsense\Unbound\Api\SettingsController();
         $unboundResults = $unboundDnsController->getAction()["unbound"];
-        $unboundDnsSettings = $unboundResults["dnsbl"]["type"];
-        $unboundDnsResults = [];
-        foreach ($unboundDnsSettings as $key => $value) {
-            $unboundDnsResults[] = [
-                "key" => $key,
-                "value" => $value["value"],
-                "selected" => $value["selected"],
-            ];
-        }
         $json = json_encode([
             "interfaces" => $xml->interfaces,
             "firewallRules" => $rules,
             "trafficShaperPipes" => $trafficShaperPipes,
             "trafficShaperRules" => $trafficShaperRules,
-            "unboundDnsBlocklists" => $unboundDnsResults,
-            "unboundDnsBlocklistDomains" => $unboundResults['dnsbl']['blocklists'],
-            "unboundDnsWhitelistDomains" => $unboundResults['dnsbl']['whitelists'],
-            "unboundDnsWildcardDomains" => $unboundResults['dnsbl']['wildcards'],
+            "unboundDnsBlocklists" => $this->unwrapObject($unboundResults["dnsbl"]["type"]),
+            "unboundDnsBlocklistDomains" => $this->unwrapObject($unboundResults['dnsbl']['blocklists']),
+            "unboundDnsWhitelistDomains" => $this->unwrapObject($unboundResults['dnsbl']['whitelists']),
+            "unboundDnsWildcardDomains" => $this->unwrapObject($unboundResults['dnsbl']['wildcards']),
 
         ]);
         return $json;
