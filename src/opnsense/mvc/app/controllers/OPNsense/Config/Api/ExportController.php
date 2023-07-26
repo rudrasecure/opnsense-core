@@ -72,7 +72,8 @@ class ExportController extends ApiMutableModelControllerBase {
         $trafficShaperPipes = $settingsController->searchPipesAction()["rows"];
         $trafficShaperRules = $settingsController->customSearchRulesAction()["rows"];
         $unboundDnsController = new \OPNsense\Unbound\Api\SettingsController();
-        $unboundDnsSettings = $unboundDnsController->getAction()["unbound"]["dnsbl"]["type"];
+        $unboundResults = $unboundDnsController->getAction()["unbound"];
+        $unboundDnsSettings = $unboundResults["dnsbl"]["type"];
         $unboundDnsResults = [];
         foreach ($unboundDnsSettings as $key => $value) {
             $unboundDnsResults[] = [
@@ -87,6 +88,10 @@ class ExportController extends ApiMutableModelControllerBase {
             "trafficShaperPipes" => $trafficShaperPipes,
             "trafficShaperRules" => $trafficShaperRules,
             "unboundDnsBlocklists" => $unboundDnsResults,
+            "unboundDnsBlocklistDomains" => $unboundResults['dnsbl']['blocklists'],
+            "unboundDnsWhitelistDomains" => $unboundResults['dnsbl']['whitelists'],
+            "unboundDnsWildcardDomains" => $unboundResults['dnsbl']['wildcards'],
+
         ]);
         return $json;
     }
